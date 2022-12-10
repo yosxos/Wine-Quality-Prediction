@@ -10,7 +10,7 @@ router = APIRouter(
 
 @router.get("/")
 async def serialisation():
-    return FileResponse("domaine/finalized_model.sav")
+    return FileResponse("domaine/finalized_model.pkl")
 
 @router.get("/description")
 async def description()->Dict[str,str]:
