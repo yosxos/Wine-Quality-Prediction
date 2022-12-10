@@ -37,6 +37,8 @@ def get_model_info():
     """Get current model info
     """
     info=[]
+    #to do 
+    return info
 
 
 
