@@ -3,6 +3,7 @@ from typing import Dict
 from api.model.wine_model import WineModel
 from domaine.ml_model import add_data , retrain_model
 from fastapi.responses import FileResponse
+import pandas as pd
 router = APIRouter(
     prefix="/api/model",
     tags=["model"],
@@ -43,8 +44,9 @@ async def add_wine(wine:WineModel):
     alcohol:float
     quality:float
     """
-    add_data(wine)  
-    return wine
+    input_df = pd.DataFrame([wine.dict()])
+    add_data(input_df)  
+    return "wine added"
 
 @router.post("/retrain")
 async def retrain():

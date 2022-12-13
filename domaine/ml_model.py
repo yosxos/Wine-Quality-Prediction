@@ -18,10 +18,7 @@ def add_data(wine):
     Args:
         wine (WineModel): the wine we want to add
     """
-    with open('datasource/Wines.csv', 'a') as f_object:
-        writer_object = writer(f_object)
-        writer_object.writerow(wine)
-        f_object.close()
+    wine.to_csv("datasource/Wines.csv", mode='a', index=False, header=False)
 
 def retrain_model():
     """Retrain the model with the current data
