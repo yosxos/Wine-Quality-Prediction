@@ -19,8 +19,9 @@ async def predict(item:WineModel):
     Returns:
         _type_: float 
     """
-    load_model=pickle.loads('domaine/finalized_model.sav')
-    return load_model.predict(item)
+    load_model=pickle.loads(open('domaine/finalized_model.pkl','rb'))
+    prediction=load_model.predict(item)
+    return prediction
 @router.get("/")
 async def perfect_wine():
     """TO DO : call a methode to get the perfect wine

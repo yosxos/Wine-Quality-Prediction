@@ -4,6 +4,9 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
 import pickle   
 import os
 from csv import writer
@@ -15,7 +18,7 @@ def add_data(wine):
     Args:
         wine (WineModel): the wine we want to add
     """
-    with open('/home/yasait/Wine-Quality-Prediction/datasource/Wines.csv', 'a') as f_object:
+    with open('datasource/Wines.csv', 'a') as f_object:
         writer_object = writer(f_object)
         writer_object.writerow(wine)
         f_object.close()
@@ -23,17 +26,19 @@ def add_data(wine):
 def retrain_model():
     """Retrain the model with the current data
     """
-    df= pd.read_csv("/home/yasait/Wine-Quality-Prediction/datasource/Wines.csv")
-    X = df.drop(columns=['quality'],axis=1)
-    y = df["quality"]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state = 0)
-    sc_x = StandardScaler()
-    X_train = sc_x.fit_transform(X_train)
-    X_test = sc_x.fit_transform(X_test)
-    dTree_clf = DecisionTreeClassifier()
-    dTree_clf.fit(X_train,y_train)
-    filename = 'finalized_model.sav'
-    pickle.dump(dTree_clf, open(filename, 'wb'))
+    wines= pd.read_csv("datasource/Wines.csv")
+    columns = wines.columns.tolist()
+    columns = [c for c in columns if c not in ["quality","id"]]
+    target = "quality"
+    train = wines.sample(frac=0.8, random_state=1)
+    test = wines.loc[~wines.index.isin(train.index)]
+    model = RandomForestRegressor(n_estimators=100, min_samples_leaf=10, random_state=1)
+    model.fit(train[columns], train[target])
+    predictions = model.predict(test[columns])
+    print(mean_squared_error(predictions, test[target]))
+    filename = 'domaine/finalized_model.pkl'
+    pickle.dump(model, open(filename, 'wb'))
+    
 def get_model_info():
     """Get current model info
     """
@@ -43,17 +48,19 @@ def get_model_info():
 
 path="'domaine/finalized_model.pkl'"
 #Train the model only if it's the first lunch
-if os.path.exists(path)== False :
-    df= pd.read_csv("/home/yasait/Wine-Quality-Prediction/datasource/Wines.csv")
-    X = df.drop(columns=['quality'],axis=1)
-    y = df["quality"]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state = 0)
-    sc_x = StandardScaler()
-    X_train = sc_x.fit_transform(X_train)
-    X_test = sc_x.fit_transform(X_test)
-    dTree_clf = DecisionTreeClassifier()
-    dTree_clf.fit(X_train,y_train)
+if not os.path.exists(path) :
+    wines= pd.read_csv("datasource/Wines.csv")
+    columns = wines.columns.tolist()
+    columns = [c for c in columns if c not in ["quality","id"]]
+    target = "quality"
+    train = wines.sample(frac=0.8, random_state=1)
+    test = wines.loc[~wines.index.isin(train.index)]
+    model = RandomForestRegressor(n_estimators=100, min_samples_leaf=10, random_state=1)
+    model.fit(train[columns], train[target])
+    predictions = model.predict(test[columns])
+    print(mean_squared_error(predictions, test[target]))
     filename = 'domaine/finalized_model.pkl'
-    pickle.dump(dTree_clf, open(filename, 'wb'))
-    y_pred2 = dTree_clf.predict(X_test)
-    print("Accuracy of Model1::",accuracy_score(y_test,y_pred2))
+    pickle.dump(model, open(filename, 'wb'))
+
+
+
