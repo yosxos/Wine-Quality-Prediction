@@ -19,7 +19,7 @@ async def predict(item:WineModel):
     Returns:
         _type_: float 
     """
-    load_model=pickle.loads(open('domaine/finalized_model.pkl','rb'))
+    load_model=pickle.load(open('domaine/finalized_model.pkl','rb'))
     prediction=load_model.predict(item)
     return prediction
 @router.get("/")
