@@ -30,7 +30,7 @@ async def add_wine(wine:WineModel):
     """Add a new wine to the data source
 
     Args:
-        wine (WineModel): Needed wine data based on our module:
+        wine (WineModel): Wine based on our module:
     fixed_acidity: float
     volatile_acidity:float
     citric_acid:float
@@ -53,4 +53,4 @@ async def retrain():
     """Retrain the model 
     """
     retrain_model()
-    return "wine Added to the dataBase"
+    return "model Retrained"
