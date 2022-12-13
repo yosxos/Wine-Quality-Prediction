@@ -35,7 +35,6 @@ def retrain_model():
     model = RandomForestRegressor(n_estimators=100, min_samples_leaf=10, random_state=1)
     model.fit(train[columns], train[target])
     predictions = model.predict(test[columns])
-    print(mean_squared_error(predictions, test[target]))
     filename = 'domaine/finalized_model.pkl'
     pickle.dump(model, open(filename, 'wb'))
     
@@ -46,19 +45,19 @@ def get_model_info():
     #to do 
     return info
 
-path="'domaine/finalized_model.pkl'"
+path="domaine/finalized_model.pkl"
 #Train the model only if it's the first lunch
 if not os.path.exists(path) :
     wines= pd.read_csv("datasource/Wines.csv")
+    wines=X = wines.drop(columns=['Id'],axis=1)
     columns = wines.columns.tolist()
-    columns = [c for c in columns if c not in ["quality","id"]]
+    columns = [c for c in columns if c not in ["quality"]]
     target = "quality"
     train = wines.sample(frac=0.8, random_state=1)
     test = wines.loc[~wines.index.isin(train.index)]
     model = RandomForestRegressor(n_estimators=100, min_samples_leaf=10, random_state=1)
     model.fit(train[columns], train[target])
     predictions = model.predict(test[columns])
-    print(mean_squared_error(predictions, test[target]))
     filename = 'domaine/finalized_model.pkl'
     pickle.dump(model, open(filename, 'wb'))
 
