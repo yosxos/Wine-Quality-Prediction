@@ -1,6 +1,8 @@
 from fastapi import APIRouter,Body
 from fastapi import Query
+from fastapi.encoders import jsonable_encoder
 from api.model.wine_model import WineModel
+import pandas as pd
 from typing import Optional
 import pickle 
 
@@ -20,8 +22,10 @@ async def predict(item:WineModel):
         _type_: float 
     """
     load_model=pickle.load(open('domaine/finalized_model.pkl','rb'))
-    prediction=load_model.predict(item)
-    return prediction
+    input_df = pd.DataFrame([item.dict()])
+    input=input_df.drop(columns=['quality'],axis=1)
+    prediction=load_model.predict(input)
+    return prediction[0]
 @router.get("/")
 async def perfect_wine():
     """TO DO : call a methode to get the perfect wine
