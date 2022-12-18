@@ -60,20 +60,4 @@ def get_model_info():
     }
 
 if not os.path.exists(path) :
-    df=pd.read_csv("datasource/Wines.csv")
-    df=df.drop(["Id"],axis=1)
-    X = df.drop(['quality'], axis = 1)
-    y = df['quality']
-    # Normalize feature variables
-    X_features = X
-    X = StandardScaler().fit_transform(X)
-    # Splitting the data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.1, random_state=0)
-    model = RandomForestClassifier(random_state=1)
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-    rnd_score = model.score(X_test,y_test)
-    rnd_MSE = mean_squared_error(y_test,y_pred)
-    save_Env(str(rnd_MSE),str(rnd_score))
-    filename = 'domaine/finalized_model.pkl'
-    pickle.dump(model, open(filename, 'wb'))
+    retrain_model()
