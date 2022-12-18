@@ -20,7 +20,7 @@ async def description()->Dict[str,str]:
     Returns:
         Dict[str,str]: With shape;
     `
-    {"Paramètres du modele":,"Performance":,"ect":,"":,}
+    {"Parameter":"","Accuracy":"","Error":"",}
     `
     """
     return get_model_info()
