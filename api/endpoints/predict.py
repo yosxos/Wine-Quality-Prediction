@@ -24,8 +24,10 @@ async def predict(item:WineModel):
     load_model=pickle.load(open('domaine/finalized_model.pkl','rb'))
     input_df = pd.DataFrame([item.dict()])
     input=input_df.drop(columns=['quality'],axis=1)
+    #reshape data frame to fit our model
+    input.columns = range(input.shape[1])
     prediction=load_model.predict(input)
-    return prediction[0]
+    return prediction[0].item()
 @router.get("/")
 async def perfect_wine():
     """TO DO : call a methode to get the perfect wine
