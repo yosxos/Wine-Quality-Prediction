@@ -30,11 +30,15 @@ async def predict(item:WineModel):
     return prediction[0].item()
 @router.get("/")
 async def perfect_wine():
-    """TO DO : call a methode to get the perfect wine
-
-    Returns:
-        _type_: Winemodel
-    """
+    """ Return the characteristics of a `perfect` wine 
     
-    return 'wine'
+    Returns :
+        _type_ : WineModel
+    """
+    winesDf = pd.read_csv('datasource/Wines.csv')
+    winesDf = winesDf.drop('Id',axis=1)
+    bestWinesQuality = winesDf['quality'].max()
+    winesDf = winesDf[winesDf['quality']==bestWinesQuality]
+    winesDf = winesDf.drop('quality',axis=1)
+    return(winesDf.mean())
 
