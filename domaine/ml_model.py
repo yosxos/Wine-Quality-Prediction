@@ -1,15 +1,41 @@
 import pandas as pd
 import numpy as np
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, mean_squared_error
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error
 import pickle   
 import os
+import dotenv
 from csv import writer
+
+path="domaine/finalized_model.pkl"
+dotenv_file = dotenv.find_dotenv()
+dotenv.load_dotenv(dotenv_file)
+#Train the model only if it's the first lunch
+if not os.path.exists(path) :
+    df=pd.read_csv("datasource/Wines.csv")
+    df=df.drop(["Id"],axis=1)
+    X = df.drop(['quality'], axis = 1)
+    y = df['quality']
+    # Normalize feature variables
+    X_features = X
+    X = StandardScaler().fit_transform(X)
+    # Splitting the data
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.1, random_state=0)
+    model = RandomForestClassifier(random_state=1)
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    rnd_score = model.score(X_test,y_test)
+    rnd_MSE = mean_squared_error(y_test,y_pred)
+    os.environ["Error"]=str(rnd_MSE)
+    os.environ["Accuracy"]=str(rnd_score)
+    dotenv.set_key("domaine/.env", "Error", os.environ["Error"])
+    dotenv.set_key("domaine/.env", "Accuracy", os.environ["Accuracy"])
+    filename = 'domaine/finalized_model.pkl'
+    pickle.dump(model, open(filename, 'wb'))
+
+
 
 
 def add_data(wine):
@@ -23,40 +49,40 @@ def add_data(wine):
 def retrain_model():
     """Retrain the model with the current data
     """
-    wines= pd.read_csv("datasource/Wines.csv")
-    columns = wines.columns.tolist()
-    columns = [c for c in columns if c not in ["quality","id"]]
-    target = "quality"
-    train = wines.sample(frac=0.8, random_state=1)
-    test = wines.loc[~wines.index.isin(train.index)]
-    model = RandomForestRegressor(n_estimators=100, min_samples_leaf=10, random_state=1)
-    model.fit(train[columns], train[target])
-    predictions = model.predict(test[columns])
+    df=pd.read_csv("datasource/Wines.csv")
+    df=df.drop(["Id"],axis=1)
+    X = df.drop(['quality'], axis = 1)
+    y = df['quality']
+    # Normalize feature variables
+    X_features = X
+    X = StandardScaler().fit_transform(X)
+    # Splitting the data
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.1, random_state=0)
+    model = RandomForestClassifier(random_state=1)
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    os.environ["Error"]=str(rnd_MSE)
+    os.environ["Accuracy"]=str(rnd_score)
+    dotenv.set_key("domaine/.env", "Error", os.environ["Error"])
+    dotenv.set_key("domaine/.env", "Accuracy", os.environ["Accuracy"])
     filename = 'domaine/finalized_model.pkl'
     pickle.dump(model, open(filename, 'wb'))
     
 def get_model_info():
     """Get current model info
     """
-    info=[]
-    #to do 
-    return info
+    df=pd.read_csv("datasource/Wines.csv")
+    df=df.drop(["Id"],axis=1)
+    X = df.drop(['quality'], axis = 1)
+    y = df['quality']
+    X_features = X
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.1, random_state=0)
+    X = StandardScaler().fit_transform(X)
+    load_model=pickle.load(open('domaine/finalized_model.pkl','rb'))
+    rnd_score = load_model.score(X_test,y_test)
+    return {
+        "Accuracy":os.environ.get("Accuracy"),
+        "Error":os.environ.get("Error"),
 
-path="domaine/finalized_model.pkl"
-#Train the model only if it's the first lunch
-if not os.path.exists(path) :
-    wines= pd.read_csv("datasource/Wines.csv")
-    wines=X = wines.drop(columns=['Id'],axis=1)
-    columns = wines.columns.tolist()
-    columns = [c for c in columns if c not in ["quality"]]
-    target = "quality"
-    train = wines.sample(frac=0.8, random_state=1)
-    test = wines.loc[~wines.index.isin(train.index)]
-    model = RandomForestRegressor(n_estimators=100, min_samples_leaf=10, random_state=1)
-    model.fit(train[columns], train[target])
-    predictions = model.predict(test[columns])
-    filename = 'domaine/finalized_model.pkl'
-    pickle.dump(model, open(filename, 'wb'))
-
-
+    }
 
