@@ -71,16 +71,10 @@ def retrain_model():
 def get_model_info():
     """Get current model info
     """
-    df=pd.read_csv("datasource/Wines.csv")
-    df=df.drop(["Id"],axis=1)
-    X = df.drop(['quality'], axis = 1)
-    y = df['quality']
-    X_features = X
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.1, random_state=0)
-    X = StandardScaler().fit_transform(X)
     load_model=pickle.load(open('domaine/finalized_model.pkl','rb'))
-    rnd_score = load_model.score(X_test,y_test)
+    
     return {
+        "Parameter":load_model.get_params(),
         "Accuracy":os.environ.get("Accuracy"),
         "Error":os.environ.get("Error"),
 
