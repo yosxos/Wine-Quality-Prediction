@@ -11,6 +11,16 @@
 - Biggest weight in the model : alcohol / sulphates / volatile acidity
 - The model has an accuracy of 74%
 
+# Methods
+
+- `POST /api/predict` permet de réaliser une prédiction endonnant en body les données nécessaires du vin à celle-ci
+- `GET /api/predict` permet de générer une combinaison de données permettant d’identifier le “vin parfait” (probablement inexistant mais statistiquement possible)
+- `GET /api/model` permet d’obtenir le modèle sérialisé
+- `GET /api/model/description` permet d’obtenir des informations sur le modèle
+- `PUT /api/model` permet d’enrichir le modèle d’une entrée de donnée supplémentaire (un vin en plus)
+- `POST /api/model/retrain` permet de réentrainer le modèle
+
+
 
 # Made BY:
 - AIT TMILLA yassir 
