@@ -37,12 +37,12 @@ def retrain_model():
     model.fit(X_train, y_train)
     rnd_score = model.score(X_test,y_test)
     rnd_MSE = mean_squared_error(y_test,y_pred)
-    ser_Env(str(rnd_MSE),str(rnd_score))
+    save_Env(str(rnd_MSE),str(rnd_score))
     y_pred = model.predict(X_test)
     filename = 'domaine/finalized_model.pkl'
     pickle.dump(model, open(filename, 'wb'))
 
-def ser_Env(acc,err):
+def save_Env(acc,err):
     os.environ["Error"]=err
     os.environ["Accuracy"]=acc
     dotenv.set_key("domaine/.env", "Error", os.environ["Error"])
@@ -74,6 +74,6 @@ if not os.path.exists(path) :
     y_pred = model.predict(X_test)
     rnd_score = model.score(X_test,y_test)
     rnd_MSE = mean_squared_error(y_test,y_pred)
-    ser_Env(str(rnd_MSE),str(rnd_score))
+    save_Env(str(rnd_MSE),str(rnd_score))
     filename = 'domaine/finalized_model.pkl'
     pickle.dump(model, open(filename, 'wb'))
