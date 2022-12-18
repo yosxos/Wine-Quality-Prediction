@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import Dict
 from api.model.wine_model import WineModel
-from domaine.ml_model import add_data , retrain_model
+from domaine.ml_model import add_data , retrain_model ,get_model_info
 from fastapi.responses import FileResponse
 import pandas as pd
 router = APIRouter(
@@ -23,7 +23,7 @@ async def description()->Dict[str,str]:
     {"Paramètres du modele":,"Performance":,"ect":,"":,}
     `
     """
-    return "description"
+    return get_model_info()
 
 @router.put("/")
 async def add_wine(wine:WineModel):
